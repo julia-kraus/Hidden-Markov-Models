@@ -69,18 +69,20 @@ class HMM(object):
         backward_trellis[:, T - 1] = 1
 
         # recursion step
-        for t in reversed(range(0, T - 1)):
-            backward_trellis[:, t] = self.B[:, backward_trellis[:, t + 1].reshape(1, -1)
+        # for t in reversed(range(0, T - 1)):
+        #     for i in range(0, N):
+        #         backward_trellis[:, t] = self.B[:, backward_trellis[:, t + 1].reshape(1, -1)
 
         for t in reversed(range(0, T - 1)):
-            backward_trellis[:, t] = np.sum(backward_trellis[:, t + 1, None] * (
-                self.B[:, obs[t + 1]].reshape(1, -1))
+            backward_trellis[:, t] = np.sum(np.dot(backward_trellis[:, t + 1].reshape(-1, 1),
+                                                   self.B[:, obs[t + 1]].reshape(1, -1))
                                             * self.A, axis=0)
 
-            # termination step
-            backward_likelihood = np.sum()
+        # termination step
 
-        return backward_trellis
+        backward_likelihood = np.sum(backward_trellis[:, 0].reshape(-1, 1) * self.pi * self.B[:, obs[0]].reshape(-1, 1))
+
+        return backward_likelihood, backward_trellis
 
 
 

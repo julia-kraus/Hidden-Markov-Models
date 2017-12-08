@@ -17,8 +17,8 @@ data = [0, 1]
 
 d = hidden_markov.HMM(trans, obs, pi)
 print(d.forward(data))
-print(d.viterbi(data))
-# print(d.backward(data))
+# print(d.viterbi(data))
+print(d.backward(data))
 
 # pi = np.array([[0.3, 0.7]]).T
 # e = viterbi.Decoder(pi, trans, obs)
