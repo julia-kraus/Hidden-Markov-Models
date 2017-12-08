@@ -1,4 +1,5 @@
 import numpy as np
+import unittest
 
 """
 hidden_markov.py
@@ -36,10 +37,11 @@ class HMM(object):
         max_prob_sequence = [trellis[:, -1].argmax()]
         for i in range(T - 1, 0, -1):
             max_prob_sequence.append(backpointer[max_prob_sequence[-1], i])
-            # return sequence with maximum probability and maximum probability
+
         return max_prob_sequence[::-1], trellis[:, -1].max()
 
     def forward(self, obs):
+        """Returns forward likelihood of a given observation sequence"""
         T = len(obs)
         forward_trellis = np.zeros((self.N, T))
         # initialization step
@@ -49,11 +51,6 @@ class HMM(object):
             forward_trellis[:, t] = np.sum(
                 np.dot(forward_trellis[:, t - 1].reshape(-1, 1), self.B[:, obs[t]].reshape(1, -1)) * self.A,
                 axis=0)
-        # non-vectorized implementation
-        # for t in range(1, T):
-        #     for j in range(0, self.N):
-        #         forward_trellis[j, t] = np.dot(forward_trellis[:, t - 1].reshape(1, self.N),
-        #                                        self.A[:, j].reshape(self.N, 1)) * self.B[j, obs[t]]
 
         # termination step
         forward_likelihood = np.sum(forward_trellis[:, T - 1])
@@ -61,6 +58,7 @@ class HMM(object):
         return forward_likelihood, forward_trellis
 
     def backward(self, obs):
+        """Returns backward likelihood of a given observation sequence"""
 
         T = len(obs)
         backward_trellis = np.zeros((self.N, T))
@@ -68,15 +66,13 @@ class HMM(object):
         # initialization step
         backward_trellis[:, T - 1] = 1
 
-        # recursion step
-        # for t in reversed(range(0, T - 1)):
-        #     for i in range(0, N):
-        #         backward_trellis[:, t] = self.B[:, backward_trellis[:, t + 1].reshape(1, -1)
-
         for t in reversed(range(0, T - 1)):
             backward_trellis[:, t] = np.sum(np.dot(backward_trellis[:, t + 1].reshape(-1, 1),
                                                    self.B[:, obs[t + 1]].reshape(1, -1))
                                             * self.A, axis=0)
+
+            backward_trellis[:, t] = np.squeeze(
+                np.dot(self.A, (backward_trellis[:, t + 1].reshape(-1, 1) * self.B[:, obs[t + 1]].reshape(-1, 1))))
 
         # termination step
 
@@ -84,23 +80,24 @@ class HMM(object):
 
         return backward_likelihood, backward_trellis
 
+    def normalize_matrix(self, matrix):
 
+    def forward_backward(self, observations):
+        """Learns HMM parameters"""
 
-        #
-        # # def forward_backward(self, observations):
-        # #     T = len(observations)
-        # #     # initialize transition_prob, observation_prob:
-        # #     A = np.ones((self.N, self.N))
-        # #     # normalize
-        # #     A = A/np.sum(A, 1)
-        # #     B = np.ones((self.N, T))
-        # #     B = B/np.sum(B, 1)
-        # #
-        # #     # iterate until convergence:
-        # #     while True:
-        # #         old_A = A
-        # #         old_B = B
-        #
-        #         # expectation step
-        #         # gamma_values
-        #         gamma_ =
+        T = len(observations)
+        # initialize transition_prob, observation_prob:
+        A = np.ones((self.N, self.N))
+        # normalize
+        A = A / np.sum(A, 1)
+        B = np.ones((self.N, T))
+        B = B / np.sum(B, 1)
+
+        # iterate until convergence:
+        while True:
+            old_A = A
+            old_B = B
+
+            # expectation step
+            # gamma_values
+            gamma_ =

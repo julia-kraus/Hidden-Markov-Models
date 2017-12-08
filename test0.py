@@ -1,5 +1,6 @@
 import numpy as np
 import hidden_markov
+import viterbi_algorithm
 
 """
 simple test: three different states, two different outputs (N=2, np.unique(observations) = 2)
@@ -16,9 +17,12 @@ obs = np.array([[0.1, 0.9],
 data = [0, 1]
 
 d = hidden_markov.HMM(trans, obs, pi)
-print(d.forward(data))
+# print(d.forward(data))
 # print(d.viterbi(data))
 print(d.backward(data))
+
+# f = viterbi_algorithm.Decoder()
+# print(f.decode(data))
 
 # pi = np.array([[0.3, 0.7]]).T
 # e = viterbi.Decoder(pi, trans, obs)
