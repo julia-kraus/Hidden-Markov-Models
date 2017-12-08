@@ -75,15 +75,13 @@ class HMM(object):
                 np.dot(self.A, (backward_trellis[:, t + 1].reshape(-1, 1) * self.B[:, obs[t + 1]].reshape(-1, 1))))
 
         # termination step
-
         backward_likelihood = np.sum(backward_trellis[:, 0].reshape(-1, 1) * self.pi * self.B[:, obs[0]].reshape(-1, 1))
 
         return backward_likelihood, backward_trellis
 
-    def normalize_matrix(self, matrix):
 
     def forward_backward(self, observations):
-        """Learns HMM parameters"""
+        """Baum-Welch-Algorithm: Learns HMM parameters"""
 
         T = len(observations)
         # initialize transition_prob, observation_prob:
@@ -99,5 +97,10 @@ class HMM(object):
             old_B = B
 
             # expectation step
-            # gamma_values
-            gamma_ =
+            gamma_ = 1
+
+    def do_M_step(self):
+
+    def do_E_step(self):
+
+    def initialize_A_B(self):
